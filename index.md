@@ -1,37 +1,77 @@
-## Welcome to GitHub Pages
+# [Trang chủ](https://ppap-1264589.github.io/interesting-solution)
 
-You can use the [editor on GitHub](https://github.com/ppap-1264589/Manacher/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+## Bài Toán
+[Longest Palindrome](https://cses.fi/problemset/task/1111)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+# Hướng dẫn
 
-### Markdown
+Thực sự là cp-algorithms là một trang đã nói khá rõ về chủ đề này -> [Manacher's Algorithm](https://cp-algorithms.com/string/manacher.html)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Dưới đây là một cách cài đặt khả thi cho bài toán trên:
 
-```markdown
-Syntax highlighted code block
+```c++
+#include <bits/stdc++.h>
+#define Task "A"
+#define up(i,a,b) for (int i = a; i <= b; i++)
+#define bit(x,i) ((x >> i) & 1)
+using namespace std;
 
-# Header 1
-## Header 2
-### Header 3
+const int maxn = 1e6 + 10;
+string s;
+int d1[maxn];
+int d2[maxn];
+int pos = -1;
+int maxx = -1;
+int n;
 
-- Bulleted
-- List
+void Manachers_Odd(){
+    for (int l = 1, r = 0, i = 1; i <= n; i++){
+        int k = (i > r) ? 1 : min(d1[l+r-i], r - i + 1);
+        while (i-k >= 1 && i+k <= n && s[i-k] == s[i+k]) k++;
 
-1. Numbered
-2. List
+        d1[i] = k--;
+        if (maxx < d1[i]*2-1){
+            maxx = d1[i]*2-1;
+            pos = i - d1[i] + 1;
+        }
+        if (i + k > r){
+            r = i + k;
+            l = i - k;
+        }
+    }
+}
 
-**Bold** and _Italic_ and `Code` text
+void Manachers_Even(){
+    for (int l = 1, r = 0, i = 2; i <= n; i++){
+        int k = (i > r) ? 0 : min(d2[l+r-i], r - i + 1);
+        while (i-k-1 >= 1 && i+k <= n && s[i-k-1] == s[i+k]) k++;
 
-[Link](url) and ![Image](src)
+        d2[i] = k--;
+        if (maxx < d2[i]*2){
+            maxx = d2[i]*2;
+            pos = i - d2[i];
+        }
+        if (i + k > r){
+            r = i + k;
+            l = i - k;
+        }
+    }
+}
+
+signed main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    if (fopen(Task".inp", "r")){
+        freopen (Task".inp", "r", stdin);
+        freopen (Task".out", "w", stdout);
+    }
+
+    cin >> s;
+    n = s.size();
+
+    s = '@' + s;
+    Manachers_Odd();
+    Manachers_Even();
+    cout << s.substr(pos, maxx);
+}
 ```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/ppap-1264589/Manacher/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
